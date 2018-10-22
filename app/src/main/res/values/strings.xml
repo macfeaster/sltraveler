@@ -23,6 +23,7 @@
     <string name="boat">Båt</string>
     <string name="toggle_favorite">Favoritmarkera</string>
     <string name="title_activity_settings">Settings</string>
+    <string name="no_departures">Inga avgångar</string>
 
 
 </resources>

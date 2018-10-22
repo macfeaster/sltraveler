@@ -287,5 +287,7 @@
     <color name="md_white">#ffffffff</color>
 
     <color name="white_75">#afffffff</color>
+    <color name="on_time">#2e7d32</color>
+    <color name="traffic_type_tint">#99000000</color>
 
 </resources>

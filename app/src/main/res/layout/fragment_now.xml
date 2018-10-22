@@ -1,65 +1,63 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".travel.views.NowFragment">
 
-    <LinearLayout
-        android:orientation="horizontal"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:weightSum="20"
-        android:baselineAligned="false">
+        android:layout_height="wrap_content">
 
         <LinearLayout
             android:id="@+id/closest_stop"
-            android:orientation="vertical"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="19"
-            android:clickable="true"
             android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:focusable="true"
+            android:orientation="vertical"
             android:paddingStart="@dimen/activity_horizontal_margin"
             android:paddingEnd="@dimen/activity_horizontal_margin"
-            android:focusable="true">
+            app:layout_constraintEnd_toStartOf="@+id/now_favorite"
+            app:layout_constraintStart_toStartOf="parent">
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/primary"
-                android:textSize="16sp"
                 android:paddingTop="@dimen/activity_vertical_margin"
                 android:text="Lillhersbyvägen"
-                />
+                android:textColor="@color/primary"
+                android:textSize="16sp" />
+
             <TextView
                 style="@style/TextAppearance.AppCompat.Display3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/secondary"
-                android:textSize="14sp"
                 android:paddingBottom="@dimen/activity_vertical_margin"
                 android:text="180 meter"
-                />
+                android:textColor="@color/secondary"
+                android:textSize="14sp" />
         </LinearLayout>
-        <LinearLayout
-            android:layout_width="60dp"
-            android:layout_height="match_parent"
-            android:gravity="end"
-            android:layout_weight="1">
-            <ImageView
-                android:layout_width="60dp"
-                android:layout_height="match_parent"
-                android:paddingStart="@dimen/activity_horizontal_margin"
-                android:paddingEnd="@dimen/activity_horizontal_margin"
-                android:src="@drawable/ic_star_border"
-                android:tint="@color/colorAccent"
-                android:clickable="true"
-                android:foregroundGravity="right"
-                android:contentDescription="@string/toggle_favorite"
-                android:focusable="true" />
 
-        </LinearLayout>
-    </LinearLayout>
+        <ImageView
+            android:id="@+id/now_favorite"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:contentDescription="@string/toggle_favorite"
+            android:paddingStart="@dimen/activity_horizontal_margin"
+            android:paddingEnd="@dimen/activity_horizontal_margin"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_star_border"
+            android:tint="@color/colorAccent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <ExpandableListView
         android:id="@+id/now_departures_list"
@@ -68,5 +66,41 @@
         android:elevation="2dp"
         style="@style/Widget.ExpandableListView"
         android:background="@color/cardview_light_background" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/now_departures_list_empty"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="UseCompoundDrawables">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:layout_marginTop="8dp"
+                android:src="@drawable/ic_directions_bus"
+                android:tint="@color/md_blue_grey_50"
+                android:contentDescription="@string/no_departures" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:padding="@dimen/activity_horizontal_margin"
+                android:text="@string/no_departures"
+                android:textColor="@color/md_blue_grey_100"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </LinearLayout>
