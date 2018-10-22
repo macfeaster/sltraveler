@@ -106,7 +106,7 @@ public class DepartureAdapter extends BaseExpandableListAdapter {
         // type.setText(child.getType().toString());
         number.setText(child.getLineNumber());
         destination.setText(child.getDestination());
-        datetime.setText("2 min");
+        datetime.setText(child.getDisplayTime());
 
         switch (child.getTransportMode()) {
             case TRAIN: type.setImageResource(R.drawable.ic_directions_railway); break;
