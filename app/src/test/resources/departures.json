@@ -1,0 +1,120 @@
+{
+  "StatusCode": 0,
+  "Message": null,
+  "ExecutionTime": 221,
+  "ResponseData": {
+    "LatestUpdate": "2018-10-22T22:06:44",
+    "DataAge": 15,
+    "Metros": [],
+    "Buses": [
+      {
+        "GroupOfLine": "bl\u00e5buss",
+        "TransportMode": "BUS",
+        "LineNumber": "176",
+        "Destination": "Stenhamra",
+        "JourneyDirection": 2,
+        "StopAreaName": "Solna station",
+        "StopAreaNumber": 50146,
+        "StopPointNumber": 50352,
+        "StopPointDesignation": "A",
+        "TimeTabledDateTime": "2018-10-22T22:07:00",
+        "ExpectedDateTime": "2018-10-22T22:07:00",
+        "DisplayTime": "Nu",
+        "JourneyNumber": 10428,
+        "Deviations": null
+      },
+      {
+        "GroupOfLine": null,
+        "TransportMode": "BUS",
+        "LineNumber": "515",
+        "Destination": "Odenplan",
+        "JourneyDirection": 2,
+        "StopAreaName": "Solna station",
+        "StopAreaNumber": 50146,
+        "StopPointNumber": 50434,
+        "StopPointDesignation": "B",
+        "TimeTabledDateTime": "2018-10-22T22:10:00",
+        "ExpectedDateTime": "2018-10-22T22:09:17",
+        "DisplayTime": "2 min",
+        "JourneyNumber": 22221,
+        "Deviations": null
+      }
+    ],
+    "Trains": [
+      {
+        "SecondaryDestinationName": null,
+        "GroupOfLine": "Pendelt\u00e5g",
+        "TransportMode": "TRAIN",
+        "LineNumber": "40",
+        "Destination": "S\u00f6dert\u00e4lje centrum",
+        "JourneyDirection": 1,
+        "StopAreaName": "Solna",
+        "StopAreaNumber": 5031,
+        "StopPointNumber": 5031,
+        "StopPointDesignation": "2",
+        "TimeTabledDateTime": "2018-10-22T22:10:00",
+        "ExpectedDateTime": "2018-10-22T22:10:00",
+        "DisplayTime": "3 min",
+        "JourneyNumber": 2273,
+        "Deviations": null
+      },
+      {
+        "SecondaryDestinationName": null,
+        "GroupOfLine": "Pendelt\u00e5g",
+        "TransportMode": "TRAIN",
+        "LineNumber": "40",
+        "Destination": "Uppsala C",
+        "JourneyDirection": 2,
+        "StopAreaName": "Solna",
+        "StopAreaNumber": 5031,
+        "StopPointNumber": 5032,
+        "StopPointDesignation": "3",
+        "TimeTabledDateTime": "2018-10-22T22:19:00",
+        "ExpectedDateTime": "2018-10-22T22:19:00",
+        "DisplayTime": "12 min",
+        "JourneyNumber": 2272,
+        "Deviations": [
+          {
+            "Text": "Resa f\u00f6rbi Arlanda C kr\u00e4ver b\u00e5de UL- och SL- biljett.",
+            "Consequence": "INFORMATION",
+            "ImportanceLevel": 5
+          }
+        ]
+      }
+    ],
+    "Trams": [
+      {
+        "TransportMode": "TRAM",
+        "LineNumber": "22",
+        "Destination": "Sickla",
+        "JourneyDirection": 2,
+        "GroupOfLine": "Tv\u00e4rbanan",
+        "StopAreaName": "Solna station",
+        "StopAreaNumber": 4549,
+        "StopPointNumber": 4549,
+        "StopPointDesignation": "1",
+        "TimeTabledDateTime": "2018-10-22T22:08:00",
+        "ExpectedDateTime": "2018-10-22T22:08:00",
+        "DisplayTime": "1 min",
+        "JourneyNumber": 22208,
+        "Deviations": null
+      }
+    ],
+    "Ships": [],
+    "StopPointDeviations": [
+      {
+        "StopInfo": {
+          "StopAreaNumber": 4549,
+          "StopAreaName": "Solna station",
+          "TransportMode": "TRAM",
+          "GroupOfLine": "Tv\u00e4rbanan"
+        },
+        "Deviation": {
+          "Text": "Av s\u00e4kerhetssk\u00e4l \u00e4r det inte till\u00e5tet att medf\u00f6ra cykel ombord p\u00e5 sp\u00e5rvagnarna.",
+          "Consequence": null,
+          "ImportanceLevel": 2
+        }
+      }
+    ]
+  }
+}
