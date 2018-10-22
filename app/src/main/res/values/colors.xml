@@ -286,4 +286,6 @@
     <color name="md_black">#ff000000</color>
     <color name="md_white">#ffffffff</color>
 
+    <color name="white_75">#afffffff</color>
+
 </resources>

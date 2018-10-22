@@ -3,8 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:background="@color/md_red_400"
     tools:context=".travel.views.TravelFragment">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -14,14 +14,13 @@
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tabs"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            app:tabIndicatorColor="@color/md_white">
+
             <com.google.android.material.tabs.TabItem
                 android:id="@+id/tabNow"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:foregroundTint="@color/md_red_400"
-                android:backgroundTintMode="screen"
-                android:backgroundTint="@color/md_amber_50"
                 android:icon="@drawable/ic_directions_bus" />
 
             <com.google.android.material.tabs.TabItem

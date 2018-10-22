@@ -1,20 +1,21 @@
 package io.sektor.sltraveler.travel.views;
 
+import android.graphics.PorterDuff;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentPagerAdapter;
-import androidx.viewpager.widget.ViewPager;
-import io.sektor.sltraveler.R;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.google.android.material.tabs.TabLayout;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.viewpager.widget.ViewPager;
+import io.sektor.sltraveler.R;
 
 public class TravelFragment extends Fragment {
 
@@ -32,9 +33,36 @@ public class TravelFragment extends Fragment {
 
         ViewPager pager = view.findViewById(R.id.travel_pager);
         TabLayout tabs = view.findViewById(R.id.tabs);
-        tabs.setupWithViewPager(pager);
+        final Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
 
+        // Set up ViewPager
+        pager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabs));
         pager.setAdapter(new TravelPagerAdapter(getChildFragmentManager()));
+
+        // Fix icon colors, because Android
+        for (int i = 0; i < tabs.getTabCount(); i++)
+            tabs.getTabAt(i).getIcon().setColorFilter(getResources().getColor(R.color.white_75), PorterDuff.Mode.SRC_IN);
+
+        tabs.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(pager) {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                super.onTabSelected(tab);
+                toolbar.setTitle(getPageTitle(tab.getPosition()));
+                tab.getIcon().setColorFilter(getResources().getColor(R.color.md_white), PorterDuff.Mode.SRC_IN);
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+                super.onTabUnselected(tab);
+                tab.getIcon().setColorFilter(getResources().getColor(R.color.white_75), PorterDuff.Mode.SRC_IN);
+            }
+        });
+
+        // If we don't have data from Bundle, select the Here & Now tab
+        if (savedInstanceState == null) {
+            tabs.getTabAt(0).getIcon().setColorFilter(getResources().getColor(R.color.md_white), PorterDuff.Mode.SRC_IN);
+            toolbar.setTitle(getPageTitle(0));
+        }
     }
 
     private class TravelPagerAdapter extends FragmentPagerAdapter {
@@ -59,17 +87,15 @@ public class TravelFragment extends Fragment {
             return 4;
         }
 
-        @Nullable
-        @Override
-        public CharSequence getPageTitle(int position) {
-            switch (position) {
-                case 0: return getResources().getString(R.string.here_now);
-                case 1: return getResources().getString(R.string.favorites);
-                case 2: return getResources().getString(R.string.journey_planner);
-                case 3: return getResources().getString(R.string.disruptions);
-            }
-            throw new IllegalArgumentException("Unknown fragment at index " + position);
-        }
+    }
 
+    public String getPageTitle(int position) {
+        switch (position) {
+            case 0: return getResources().getString(R.string.here_now);
+            case 1: return getResources().getString(R.string.favorites);
+            case 2: return getResources().getString(R.string.journey_planner);
+            case 3: return getResources().getString(R.string.disruptions);
+        }
+        throw new IllegalArgumentException("Unknown fragment at index " + position);
     }
 }
