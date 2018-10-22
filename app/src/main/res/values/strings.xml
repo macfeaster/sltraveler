@@ -2,6 +2,9 @@
     <string name="app_name">SL Traveler</string>
     <string name="check_card_balance">Kontrollera saldo</string>
 
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
