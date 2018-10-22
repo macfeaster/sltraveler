@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:id="@+id/drawer_main" android:checkableBehavior="single">
+        <item android:id="@+id/drawer_trip"
+            android:title="@string/journey_planner"
+            android:icon="@drawable/ic_directions" />
+    </group>
+
+    <group android:id="@+id/drawer_extras" android:checkableBehavior="single">
+        <item android:id="@+id/drawer_read_card"
+            android:title="@string/check_card_balance"
+            android:icon="@drawable/ic_credit_card" />
+    </group>
+</menu>

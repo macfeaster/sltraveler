@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">SL Traveler</string>
+    <string name="check_card_balance">Kontrollera saldo</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+
+    <string name="here_now">Här och nu</string>
+    <string name="favorites">Favoriter</string>
+    <string name="journey_planner">Reseplanerare</string>
+    <string name="disruptions">Störningsinformation</string>
+</resources>
