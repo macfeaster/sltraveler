@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 import android.widget.ExpandableListView;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,8 +17,11 @@ import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import io.sektor.sltraveler.R;
+import io.sektor.sltraveler.SLApplication;
 import io.sektor.sltraveler.travel.contracts.NowContract;
 import io.sektor.sltraveler.travel.models.results.departures.Departure;
+import io.sektor.sltraveler.travel.models.results.departures.Departure.TransportMode;
+import io.sektor.sltraveler.travel.presenters.NowPresenter;
 import io.sektor.sltraveler.travel.views.adapters.DepartureAdapter;
 
 public class NowFragment extends Fragment implements NowContract.View {
@@ -34,27 +36,17 @@ public class NowFragment extends Fragment implements NowContract.View {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        departureAdapter = new DepartureAdapter(getContext(), new ArrayList<String>(), new HashMap<String, List<Departure>>());
+        departureAdapter = new DepartureAdapter(getContext(), new ArrayList<TransportMode>(), new HashMap<TransportMode, List<Departure>>());
+        SLApplication app = (SLApplication) getActivity().getApplication();
+
+        NowPresenter presenter = new NowPresenter(app.getDeparturesService(), app.getRTKey(), this);
+        this.setPresenter(presenter);
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_now, container, false);
-
-        List<String> headers = Arrays.asList("Buss", "Pendeltåg");
-        Map<String, List<Departure>> departures = new HashMap<>();
-        departures.put("Buss", Arrays.asList(
-                new Departure(Departure.TransportMode.BUS, "611", "Täby centrum", "2 min"),
-                new Departure(Departure.TransportMode.BUS, "614B", "Centralen", "12 min")
-        ));
-        departures.put("Pendeltåg", Arrays.asList(
-                new Departure(Departure.TransportMode.TRAIN, "36", "Södertälje C", "12 min"),
-                new Departure(Departure.TransportMode.TRAIN, "36", "Tumba", "12 min"),
-                new Departure(Departure.TransportMode.TRAIN, "38", "Märsta", "12 min"),
-                new Departure(Departure.TransportMode.TRAIN, "38", "Uppsala C", "12 min"),
-                new Departure(Departure.TransportMode.TRAIN, "38", "Södertälje C", "12 min")
-        ));
 
         // Set up Departures list
         departuresList = v.findViewById(R.id.now_departures_list);
@@ -81,7 +73,7 @@ public class NowFragment extends Fragment implements NowContract.View {
     }
 
     @Override
-    public void showDepartures(List<String> headers, Map<String, List<Departure>> departures) {
+    public void showDepartures(List<TransportMode> headers, Map<TransportMode, List<Departure>> departures) {
         departureAdapter.replaceData(headers, departures);
 
         for (int i = 0; i < departureAdapter.getGroupCount(); i++)

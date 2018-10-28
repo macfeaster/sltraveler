@@ -16,20 +16,21 @@ import androidx.core.content.ContextCompat;
 import androidx.core.widget.ImageViewCompat;
 import io.sektor.sltraveler.R;
 import io.sektor.sltraveler.travel.models.results.departures.Departure;
+import io.sektor.sltraveler.travel.models.results.departures.Departure.TransportMode;
 
 public class DepartureAdapter extends BaseExpandableListAdapter {
 
     private Context context;
-    private List<String> headers;
-    private Map<String, List<Departure>> children;
+    private List<TransportMode> headers;
+    private Map<TransportMode, List<Departure>> children;
 
-    public DepartureAdapter(Context context, List<String> headers, Map<String, List<Departure>> children) {
+    public DepartureAdapter(Context context, List<TransportMode> headers, Map<TransportMode, List<Departure>> children) {
         this.context = context;
         this.headers = headers;
         this.children = children;
     }
 
-    public void replaceData(List<String> headers, Map<String, List<Departure>> children) {
+    public void replaceData(List<TransportMode> headers, Map<TransportMode, List<Departure>> children) {
         this.headers = headers;
         this.children = children;
     }
@@ -75,7 +76,7 @@ public class DepartureAdapter extends BaseExpandableListAdapter {
 
     @Override
     public View getGroupView(int groupPosition, boolean isExpanded, View view, ViewGroup parent) {
-        String title = (String) getGroup(groupPosition);
+        TransportMode transportMode = (TransportMode) getGroup(groupPosition);
 
         if (view == null) {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -83,7 +84,15 @@ public class DepartureAdapter extends BaseExpandableListAdapter {
         }
 
         TextView listHeader = view.findViewById(R.id.departure_list_header);
-        listHeader.setText(title);
+
+        switch (transportMode) {
+            case BUS: listHeader.setText(view.getResources().getString(R.string.bus)); break;
+            case METRO: listHeader.setText(view.getResources().getString(R.string.metro)); break;
+            case TRAIN: listHeader.setText(view.getResources().getString(R.string.train)); break;
+            case TRAM: listHeader.setText(view.getResources().getString(R.string.tram)); break;
+            case SHIP: listHeader.setText(view.getResources().getString(R.string.ship)); break;
+            default: listHeader.setText(view.getResources().getString(R.string.other_transport_mode)); break;
+        }
 
         return view;
     }
@@ -111,6 +120,7 @@ public class DepartureAdapter extends BaseExpandableListAdapter {
         switch (child.getTransportMode()) {
             case TRAIN: type.setImageResource(R.drawable.ic_directions_railway); break;
             case BUS: type.setImageResource(R.drawable.ic_directions_bus); break;
+            case METRO: type.setImageResource(R.drawable.ic_subway); break;
             default: type.setImageResource(R.drawable.ic_directions); break;
         }
 

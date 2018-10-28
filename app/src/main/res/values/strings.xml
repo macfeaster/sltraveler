@@ -24,6 +24,10 @@
     <string name="toggle_favorite">Favoritmarkera</string>
     <string name="title_activity_settings">Settings</string>
     <string name="no_departures">Inga avgångar</string>
+    <string name="other_transport_mode">Annat färdmedel</string>
+    <string name="metro">Tunnelbana</string>
+    <string name="tram">Lokalbana</string>
+    <string name="ship">Båt</string>
 
 
 </resources>
