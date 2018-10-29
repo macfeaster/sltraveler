@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ExpandableListView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -60,6 +61,14 @@ public class NowFragment extends Fragment implements NowContract.View {
         departuresList.setAdapter(departureAdapter);
         emptyList = v.findViewById(R.id.now_departures_list_empty);
 
+        LinearLayout closestStop = v.findViewById(R.id.closest_stop);
+        closestStop.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                presenter.showPicker();
+            }
+        });
+
         return v;
     }
 
@@ -108,6 +117,12 @@ public class NowFragment extends Fragment implements NowContract.View {
 
         stopNameView.setText(stopName);
         stopDistanceView.setText(getString(R.string.stop_distance, stopDistance));
+    }
+
+    @Override
+    public void launchPicker() {
+        Intent intent = new Intent(getActivity(), PickerActivity.class);
+        startActivity(intent);
     }
 
     @Override

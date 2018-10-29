@@ -33,7 +33,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setContentView(R.layout.activity_main);
 
         locationClient = LocationServices.getFusedLocationProviderClient(this);
-        updateLocation();
 
         // Start Travel Fragment
         if (savedInstanceState == null)
@@ -53,6 +52,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         NavigationView navigationView = findViewById(R.id.navigation_view);
         navigationView.setNavigationItemSelectedListener(this);
+    }
+
+    @Override
+    protected void onResumeFragments() {
+        super.onResumeFragments();
+        updateLocation();
     }
 
     @Override

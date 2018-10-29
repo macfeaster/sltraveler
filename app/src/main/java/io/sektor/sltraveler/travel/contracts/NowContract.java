@@ -22,6 +22,7 @@ public interface NowContract {
 
         void showNearbyStop(String stopName, String stopDistance);
 
+        void launchPicker();
     }
 
     interface Presenter extends BasePresenter {

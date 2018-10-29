@@ -100,7 +100,7 @@ public class NowPresenter implements NowContract.Presenter {
 
     @Override
     public void showPicker() {
-
+        nowView.launchPicker();
     }
 
     @Override

@@ -31,5 +31,7 @@
 
     <string name="stop_distance">%s meter</string>
     <string name="loading_location">Laddar plats...</string>
+    <string name="choose_stop">Välj hållplats</string>
+    <string name="stop_distance_short">%s M</string>
 
 </resources>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:context="io.sektor.sltraveler.travel.views.PickerActivity">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/search_app_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        android:elevation="3dp">
+
+        <androidx.appcompat.widget.Toolbar
+            app:navigationIcon="@drawable/ic_arrow_back"
+            app:title="@string/choose_stop"
+            android:id="@+id/picker_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:layout_scrollFlags="enterAlways|snap" />
+
+        <com.lapism.searchview.widget.SearchView
+            android:id="@+id/search_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_behavior="com.lapism.searchview.SearchBehavior2"
+            app:search_hint="Sök hållplats"
+            app:search_shadow="false"
+            app:search_version="toolbar"
+            app:search_version_margins="toolbar" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <ExpandableListView
+        android:id="@+id/picker_list"
+        android:layout_width="match_parent"
+        style="@style/Widget.ExpandableListView"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:clipToPadding="true"
+        tools:context="io.sektor.sljava.picker.PickerActivity"
+        />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
