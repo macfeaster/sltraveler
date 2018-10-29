@@ -1,11 +1,13 @@
 package io.sektor.sltraveler.travel.views;
 
 import android.content.Intent;
+import android.location.Location;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ExpandableListView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -39,7 +41,12 @@ public class NowFragment extends Fragment implements NowContract.View {
         departureAdapter = new DepartureAdapter(getContext(), new ArrayList<TransportMode>(), new HashMap<TransportMode, List<Departure>>());
         SLApplication app = (SLApplication) getActivity().getApplication();
 
-        NowPresenter presenter = new NowPresenter(app.getDeparturesService(), app.getRTKey(), this);
+        NowPresenter presenter = new NowPresenter(app.getDeparturesService(),
+                app.getNearbyStopsService(),
+                app.getRTKey(),
+                app.getNBSKey(),
+                this);
+
         this.setPresenter(presenter);
     }
 
@@ -95,7 +102,20 @@ public class NowFragment extends Fragment implements NowContract.View {
     }
 
     @Override
+    public void showNearbyStop(String stopName, String stopDistance) {
+        TextView stopNameView = getView().findViewById(R.id.stop_name);
+        TextView stopDistanceView = getView().findViewById(R.id.stop_distance);
+
+        stopNameView.setText(stopName);
+        stopDistanceView.setText(getString(R.string.stop_distance, stopDistance));
+    }
+
+    @Override
     public void setPresenter(@NonNull NowContract.Presenter presenter) {
         this.presenter = presenter;
+    }
+
+    void setLocation(Location location) {
+        presenter.updateLocation(location.getLatitude(), location.getLongitude());
     }
 }

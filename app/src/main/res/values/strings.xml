@@ -29,5 +29,7 @@
     <string name="tram">Lokalbana</string>
     <string name="ship">Båt</string>
 
+    <string name="stop_distance">%s meter</string>
+    <string name="loading_location">Laddar plats...</string>
 
 </resources>

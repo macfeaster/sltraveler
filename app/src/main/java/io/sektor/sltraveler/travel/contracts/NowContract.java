@@ -20,15 +20,21 @@ public interface NowContract {
 
         void showLoadingDeparturesError();
 
+        void showNearbyStop(String stopName, String stopDistance);
+
     }
 
     interface Presenter extends BasePresenter {
+
+        void loadNearbyStops();
 
         void loadDepartures(boolean forceUpdate);
 
         void showPicker();
 
         void result(int requestCode, int resultCode);
+
+        void updateLocation(double latitude, double longitude);
 
     }
 

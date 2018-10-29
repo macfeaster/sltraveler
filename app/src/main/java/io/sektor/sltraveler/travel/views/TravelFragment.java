@@ -1,6 +1,7 @@
 package io.sektor.sltraveler.travel.views;
 
 import android.graphics.PorterDuff;
+import android.location.Location;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +19,17 @@ import androidx.viewpager.widget.ViewPager;
 import io.sektor.sltraveler.R;
 
 public class TravelFragment extends Fragment {
+
+    private static TravelFragment instance;
+    private NowFragment nowFragment = new NowFragment();
+    private Location location;
+
+    public static TravelFragment getInstance() {
+        if (instance == null)
+            instance = new TravelFragment();
+
+        return instance;
+    }
 
     public TravelFragment() {}
 
@@ -65,6 +77,11 @@ public class TravelFragment extends Fragment {
         }
     }
 
+    public void setLocation(Location location) {
+        this.location = location;
+        nowFragment.setLocation(location);
+    }
+
     private class TravelPagerAdapter extends FragmentPagerAdapter {
 
         TravelPagerAdapter(FragmentManager fm) {
@@ -74,7 +91,7 @@ public class TravelFragment extends Fragment {
         @Override
         public Fragment getItem(int position) {
             switch (position) {
-                case 0: return new NowFragment();
+                case 0: return nowFragment;
                 case 1: return new NowFragment(); // FavoritesFragment();
                 case 2: return new NowFragment(); // PlannerFragment();
                 case 3: return new NowFragment(); // DisruptionsFragment();

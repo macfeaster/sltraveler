@@ -1,20 +1,14 @@
 
 package io.sektor.sltraveler.travel.models.results.nearbystops;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import java.util.List;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class LocationList {
 
-    private String noNamespaceSchemaLocation;
     private List<StopLocation> stopLocation = null;
-
-    public String getNoNamespaceSchemaLocation() {
-        return noNamespaceSchemaLocation;
-    }
-
-    public void setNoNamespaceSchemaLocation(String noNamespaceSchemaLocation) {
-        this.noNamespaceSchemaLocation = noNamespaceSchemaLocation;
-    }
 
     public List<StopLocation> getStopLocation() {
         return stopLocation;

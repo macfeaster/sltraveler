@@ -2,8 +2,8 @@ package io.sektor.sltraveler;
 
 import android.app.Application;
 
+import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 
 import io.sektor.sltraveler.travel.models.services.DeparturesService;
 import io.sektor.sltraveler.travel.models.services.NearbyStopsService;
@@ -26,10 +26,10 @@ public class SLApplication extends Application {
             OkHttpClient client = new OkHttpClient.Builder().addInterceptor(interceptor).build();
 
             ObjectMapper mapper = new ObjectMapper();
-            mapper.setPropertyNamingStrategy(PropertyNamingStrategy.UPPER_CAMEL_CASE);
+            mapper.configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true);
 
             retrofit = new Retrofit.Builder()
-                    .baseUrl("http://api.sl.se")
+                    .baseUrl("https://api.sl.se")
                     .client(client)
                     .addConverterFactory(JacksonConverterFactory.create(mapper))
                     .addCallAdapterFactory(RxJava2CallAdapterFactory.create())

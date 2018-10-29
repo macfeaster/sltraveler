@@ -59,4 +59,8 @@ public class StopLocation {
         this.dist = dist;
     }
 
+    public int getSiteId() {
+        return Integer.parseInt(id.replace("30010", ""));
+    }
+
 }
