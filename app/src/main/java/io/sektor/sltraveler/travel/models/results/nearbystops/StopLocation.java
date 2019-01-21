@@ -1,15 +1,39 @@
 
 package io.sektor.sltraveler.travel.models.results.nearbystops;
 
+import androidx.annotation.NonNull;
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
 
+@Entity(tableName = "stop")
 public class StopLocation {
 
+    @ColumnInfo
     private String idx;
+
+    @ColumnInfo
     private String name;
+
+    @NonNull
+    @PrimaryKey
     private String id;
+
+    @ColumnInfo
     private String lat;
+
+    @ColumnInfo
     private String lon;
+
+    @ColumnInfo
     private String dist;
+
+    @ColumnInfo
+    private long time;
+
+    public StopLocation() {
+        this.time = System.currentTimeMillis() / 1000L;
+    }
 
     public String getIdx() {
         return idx;
@@ -63,4 +87,11 @@ public class StopLocation {
         return Integer.parseInt(id.replace("30010", ""));
     }
 
+    public long getTime() {
+        return time;
+    }
+
+    public void setTime(long time) {
+        this.time = time;
+    }
 }

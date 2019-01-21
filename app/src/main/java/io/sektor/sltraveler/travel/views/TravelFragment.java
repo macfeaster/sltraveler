@@ -1,7 +1,6 @@
 package io.sektor.sltraveler.travel.views;
 
 import android.graphics.PorterDuff;
-import android.location.Location;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,8 +20,9 @@ import io.sektor.sltraveler.R;
 public class TravelFragment extends Fragment {
 
     private static TravelFragment instance;
-    private NowFragment nowFragment = new NowFragment();
-    private Location location;
+    private NowFragment nowFragment;
+    private final static String SELECTED_TAB_KEY = "selected_tab";
+    private ViewPager pager;
 
     public static TravelFragment getInstance() {
         if (instance == null)
@@ -34,6 +34,13 @@ public class TravelFragment extends Fragment {
     public TravelFragment() {}
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        nowFragment = (NowFragment) NowFragment.instantiate(getContext(), NowFragment.class.getName());
+    }
+
+    @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_travel, container, false);
@@ -43,13 +50,14 @@ public class TravelFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        ViewPager pager = view.findViewById(R.id.travel_pager);
+        pager = view.findViewById(R.id.travel_pager);
         TabLayout tabs = view.findViewById(R.id.tabs);
         final Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
 
         // Set up ViewPager
         pager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabs));
         pager.setAdapter(new TravelPagerAdapter(getChildFragmentManager()));
+        pager.setOffscreenPageLimit(4);
 
         // Fix icon colors, because Android
         for (int i = 0; i < tabs.getTabCount(); i++)
@@ -70,16 +78,26 @@ public class TravelFragment extends Fragment {
             }
         });
 
-        // If we don't have data from Bundle, select the Here & Now tab
-        if (savedInstanceState == null) {
-            tabs.getTabAt(0).getIcon().setColorFilter(getResources().getColor(R.color.md_white), PorterDuff.Mode.SRC_IN);
-            toolbar.setTitle(getPageTitle(0));
-        }
+        updateFromBundle(savedInstanceState, tabs, toolbar);
     }
 
-    public void setLocation(Location location) {
-        this.location = location;
-        nowFragment.setLocation(location);
+    private void updateFromBundle(Bundle savedInstanceState, TabLayout tabs, Toolbar toolbar) {
+        // If we don't have data from Bundle, select the Here & Now tab
+        int selectedTab = 0;
+
+        if (savedInstanceState != null && savedInstanceState.keySet().contains(SELECTED_TAB_KEY))
+            selectedTab = savedInstanceState.getInt(SELECTED_TAB_KEY);
+
+        pager.setCurrentItem(selectedTab);
+        tabs.getTabAt(selectedTab).getIcon().setColorFilter(getResources().getColor(R.color.md_white), PorterDuff.Mode.SRC_IN);
+        toolbar.setTitle(getPageTitle(selectedTab));
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        outState.putInt(SELECTED_TAB_KEY, pager.getCurrentItem());
+
+        super.onSaveInstanceState(outState);
     }
 
     private class TravelPagerAdapter extends FragmentPagerAdapter {
@@ -92,9 +110,9 @@ public class TravelFragment extends Fragment {
         public Fragment getItem(int position) {
             switch (position) {
                 case 0: return nowFragment;
-                case 1: return new NowFragment(); // FavoritesFragment();
-                case 2: return new NowFragment(); // PlannerFragment();
-                case 3: return new NowFragment(); // DisruptionsFragment();
+                case 1: return new FavoritesFragment();
+                case 2: return new PlannerFragment();
+                case 3: return new DisruptionsFragment();
             }
             throw new IllegalArgumentException("Unknown fragment at index " + position);
         }
