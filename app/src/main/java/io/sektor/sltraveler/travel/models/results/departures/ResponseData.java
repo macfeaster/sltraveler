@@ -2,11 +2,12 @@ package io.sektor.sltraveler.travel.models.results.departures;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ResponseData {
+public class ResponseData implements Serializable {
 
     private Date latestUpdate;
     private Integer dataAge;

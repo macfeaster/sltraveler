@@ -12,6 +12,7 @@ import com.google.android.gms.location.LocationServices;
 import androidx.room.Room;
 import io.reactivex.subjects.PublishSubject;
 import io.sektor.sltraveler.travel.models.AppDatabase;
+import io.sektor.sltraveler.travel.models.repositories.DeparturesRepository;
 import io.sektor.sltraveler.travel.models.repositories.NearbyStopsRepository;
 import io.sektor.sltraveler.travel.models.services.DeparturesService;
 import io.sektor.sltraveler.travel.models.services.NearbyStopsService;
@@ -28,6 +29,7 @@ public class ApplicationState {
     private static DeparturesService departuresService;
     private static NearbyStopsService nearbyStopsService;
     private static Retrofit retrofit;
+    private final DeparturesRepository departuresRepository;
 
     private FusedLocationProviderClient locationClient;
     private LocationProvider provider;
@@ -40,9 +42,10 @@ public class ApplicationState {
         provider = new LocationProvider(locationSubject);
         db = Room.databaseBuilder(context, AppDatabase.class, "sl-traveler").build();
         stopsRepository = new NearbyStopsRepository(this);
+        departuresRepository = new DeparturesRepository(this, context);
     }
 
-    public static void createInstance(Context context) {
+    static void createInstance(Context context) {
         instance = new ApplicationState(context);
     }
 
@@ -111,4 +114,7 @@ public class ApplicationState {
     }
 
 
+    public DeparturesRepository getDeparturesRepository() {
+        return departuresRepository;
+    }
 }

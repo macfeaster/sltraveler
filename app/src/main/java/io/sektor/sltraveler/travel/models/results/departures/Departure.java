@@ -3,14 +3,15 @@ package io.sektor.sltraveler.travel.models.results.departures;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Departure {
+public class Departure implements Serializable {
 
     public enum TransportMode {
-        BUS, TRAIN, TRAM, METRO, SHIP
+        TRAIN, METRO, TRAM, BUS, SHIP
     }
 
     private String groupOfLine;
