@@ -21,7 +21,7 @@ public interface StopLocationDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     Maybe<List<Long>> insertAll(List<StopLocation> stops);
 
-    @Query("DELETE FROM stop")
-    void deleteAll();
+    @Query("DELETE FROM stop WHERE time < :maxAge")
+    void deleteAll(long maxAge);
 
 }

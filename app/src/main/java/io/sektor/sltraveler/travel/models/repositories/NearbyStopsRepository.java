@@ -4,8 +4,8 @@ import android.util.Log;
 
 import java.util.List;
 
-import io.reactivex.Completable;
 import io.reactivex.Maybe;
+import io.reactivex.MaybeOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 import io.sektor.sltraveler.ApplicationState;
@@ -25,18 +25,26 @@ public class NearbyStopsRepository {
     }
 
     public Maybe<List<StopLocation>> loadNearbyStops(String latitude, String longitude) {
-        return Completable.fromAction(stopLocationDao::deleteAll)
+        return Maybe
+                .concat(cleanCache(), loadStopsLocal(), loadStopsRemote(latitude, longitude))
+                .doOnError(err -> Log.e(LOG_TAG, err.getMessage()))
+                .firstElement();
+    }
+
+    public Maybe<List<StopLocation>> cleanCache() {
+        // Invalidate anything older than a minute
+        long maxAge = System.currentTimeMillis() / 1000L - 60;
+
+        MaybeOnSubscribe<List<StopLocation>> del = emitter -> {
+            stopLocationDao.deleteAll(maxAge);
+            emitter.onComplete();
+        };
+
+        return Maybe.create(del)
+                .doOnError(err -> Log.e(LOG_TAG, err.getMessage()))
                 .subscribeOn(Schedulers.io())
-                .toMaybe()
-                .flatMap(next -> Maybe
-                        .concat(loadStopsLocal(), loadStopsRemote(latitude, longitude))
-                        .firstElement()
-                        .doAfterSuccess(stopLocations -> stopLocationDao
-                                .insertAll(stopLocations)
-                                .subscribeOn(Schedulers.io())
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .doOnError(e -> Log.e(LOG_TAG, e.getMessage()))
-                                .subscribe()));
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnComplete(() -> Log.d(LOG_TAG, "Cleaned cache"));
     }
 
     private Maybe<List<StopLocation>> loadStopsRemote(String latitude, String longitude) {
@@ -47,7 +55,12 @@ public class NearbyStopsRepository {
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(nbs -> nbs.getLocationList().getStopLocation())
                 .filter(this::notEmpty)
-                .doAfterSuccess(ls -> Log.e(LOG_TAG, "Cached NBS response: " + ls.size()));
+                .doAfterSuccess(stopLocations -> stopLocationDao
+                        .insertAll(stopLocations)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .doOnError(e -> Log.e(LOG_TAG, e.getMessage()))
+                        .subscribe(ls -> Log.d(LOG_TAG, "Cached NBS response: " + ls.size())));
     }
 
     private Maybe<List<StopLocation>> loadStopsLocal() {
@@ -56,7 +69,7 @@ public class NearbyStopsRepository {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .filter(this::notEmpty)
-                .doOnSuccess(l -> Log.e(LOG_TAG, "Hit cache: found " + l.size()));
+                .doOnSuccess(l -> Log.d(LOG_TAG, "Hit cache: found " + l.size()));
     }
 
     private boolean notEmpty(List l) {
