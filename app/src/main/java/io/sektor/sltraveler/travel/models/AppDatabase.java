@@ -5,7 +5,7 @@ import androidx.room.RoomDatabase;
 import io.sektor.sltraveler.travel.models.dao.StopLocationDao;
 import io.sektor.sltraveler.travel.models.results.nearbystops.StopLocation;
 
-@Database(entities = {StopLocation.class}, version = 1)
+@Database(entities = {StopLocation.class}, version = 3)
 public abstract class AppDatabase extends RoomDatabase {
     public abstract StopLocationDao stopLocationDao();
 }
