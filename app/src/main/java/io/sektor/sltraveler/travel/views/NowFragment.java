@@ -1,5 +1,6 @@
 package io.sektor.sltraveler.travel.views;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -28,10 +29,14 @@ import io.sektor.sltraveler.R;
 import io.sektor.sltraveler.travel.contracts.NowContract;
 import io.sektor.sltraveler.travel.models.results.departures.Departure;
 import io.sektor.sltraveler.travel.models.results.departures.Departure.TransportMode;
+import io.sektor.sltraveler.travel.models.results.nearbystops.StopLocation;
 import io.sektor.sltraveler.travel.presenters.NowPresenter;
 import io.sektor.sltraveler.travel.views.adapters.DepartureAdapter;
 
 public class NowFragment extends Fragment implements NowContract.View {
+
+    private static final int PICKER_REQUEST = 201;
+    private static final String LOG_TAG = "NowFragment";
 
     private NowContract.Presenter presenter;
     private ExpandableListView departuresList;
@@ -50,6 +55,21 @@ public class NowFragment extends Fragment implements NowContract.View {
         super.onCreate(savedInstanceState);
         departureAdapter = new DepartureAdapter(getContext(), new ArrayList<>(), new HashMap<>());
         appState = ApplicationState.getInstance();
+        final NowPresenter presenter = new NowPresenter(appState, this);
+        this.setPresenter(presenter);
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        if (savedInstanceState != null) {
+            StopLocation stop = savedInstanceState.getParcelable("stop");
+
+            if (stop != null) {
+                presenter.selectSite(stop, true);
+            }
+        }
     }
 
     @Override
@@ -73,8 +93,6 @@ public class NowFragment extends Fragment implements NowContract.View {
     public void onResume() {
         super.onResume();
 
-        final NowPresenter presenter = new NowPresenter(appState, this);
-
         disposable = appState.getLocationSubject().subscribe(
                 location -> presenter.updateLocation(location.getLatitude(), location.getLongitude()),
                 throwable -> {
@@ -82,7 +100,6 @@ public class NowFragment extends Fragment implements NowContract.View {
                     Log.e(getClass().getSimpleName(), throwable.getMessage());
                 });
 
-        this.setPresenter(presenter);
         presenter.start();
     }
 
@@ -94,7 +111,33 @@ public class NowFragment extends Fragment implements NowContract.View {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        presenter.result(requestCode, resultCode);
+        Log.d(LOG_TAG, "Got activity request code: " + requestCode);
+
+        switch (requestCode) {
+            case Activity.RESULT_CANCELED:
+                // Do nothing
+                break;
+            case PICKER_REQUEST:
+                if (data == null) {
+                    Log.w(LOG_TAG, "Picker response contained no data.");
+                    return;
+                }
+
+                StopLocation stop = data.getParcelableExtra("stop");
+                presenter.selectSite(stop, true);
+                Log.d(LOG_TAG, "Selected stop from picker: " + stop);
+                break;
+            default:
+                Log.w(LOG_TAG, "Got unexpected activity request code: " + requestCode);
+                break;
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putParcelable("stop", presenter.getStop());
     }
 
     @Override
@@ -148,7 +191,7 @@ public class NowFragment extends Fragment implements NowContract.View {
     @Override
     public void launchPicker() {
         Intent intent = new Intent(getActivity(), PickerActivity.class);
-        startActivity(intent);
+        startActivityForResult(intent, PICKER_REQUEST);
     }
 
     @Override

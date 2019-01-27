@@ -2,8 +2,11 @@ package io.sektor.sltraveler.travel.models.results.departures;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import java.io.Serializable;
+
+@SuppressWarnings("unused")
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Deviation {
+public class Deviation implements Serializable {
 
     private String text;
     private String consequence;

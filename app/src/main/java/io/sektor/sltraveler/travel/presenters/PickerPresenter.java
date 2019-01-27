@@ -1,24 +1,57 @@
 package io.sektor.sltraveler.travel.presenters;
 
+import android.util.Log;
+
+import java.util.List;
+
+import io.reactivex.MaybeObserver;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
+import io.sektor.sltraveler.ApplicationState;
 import io.sektor.sltraveler.travel.contracts.PickerContract;
 import io.sektor.sltraveler.travel.models.results.nearbystops.StopLocation;
-import io.sektor.sltraveler.travel.models.services.NearbyStopsService;
 
 public class PickerPresenter implements PickerContract.Presenter {
 
-    private NearbyStopsService nearbyStopsService;
-    private String nbsApiKey;
+    private static final String LOG_TAG = "PickerPresenter";
+    private final ApplicationState appState;
     private PickerContract.View pickerView;
 
-    public PickerPresenter(NearbyStopsService nearbyStopsService, String nbsApiKey, PickerContract.View pickerView) {
-        this.nearbyStopsService = nearbyStopsService;
-        this.nbsApiKey = nbsApiKey;
+    public PickerPresenter(ApplicationState appState, PickerContract.View pickerView) {
+        this.appState = appState;
         this.pickerView = pickerView;
     }
 
     @Override
     public void loadStopsAndFavorites() {
+        appState.getStopsRepository()
+                .loadStopsLocal()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new MaybeObserver<List<StopLocation>>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
 
+                    }
+
+                    @Override
+                    public void onSuccess(List<StopLocation> stops) {
+                        Log.d(LOG_TAG, "Presenter got " + stops.size() + " stations from repo");
+                        pickerView.showNearbyStops(stops);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.e(LOG_TAG, "loadStopsLocal errored:", e);
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        Log.d(LOG_TAG, "Received no stops from local cache.");
+                    }
+                });
     }
 
     @Override
@@ -38,6 +71,6 @@ public class PickerPresenter implements PickerContract.Presenter {
 
     @Override
     public void start() {
-
+        loadStopsAndFavorites();
     }
 }

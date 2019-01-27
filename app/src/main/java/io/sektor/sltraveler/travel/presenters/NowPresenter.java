@@ -4,6 +4,7 @@ import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.TreeMap;
 
 import io.reactivex.MaybeObserver;
@@ -36,6 +37,11 @@ public class NowPresenter implements NowContract.Presenter {
 
     @Override
     public void loadNearbyStops() {
+        if (userSelectedSite) {
+            loadDepartures(false);
+            return;
+        }
+
         appState.getStopsRepository()
                 .loadNearbyStops("" + latitude, "" + longitude)
                 .subscribe(new MaybeObserver<List<StopLocation>>() {
@@ -46,10 +52,9 @@ public class NowPresenter implements NowContract.Presenter {
 
                     @Override
                     public void onSuccess(List<StopLocation> stops) {
-                        stop = stops.get(0);
-                        nowView.setLoadingIndicator(false);
-                        nowView.showNearbyStop(stop.getName(), stop.getDist());
-                        loadDepartures(true);
+                        boolean changed = Objects.equals(stop, stops.get(0));
+                        selectSite(stops.get(0), false);
+                        loadDepartures(changed);
                     }
 
                     @Override
@@ -109,15 +114,40 @@ public class NowPresenter implements NowContract.Presenter {
     }
 
     @Override
-    public void result(int requestCode, int resultCode) {
+    public void selectSite(StopLocation stop, boolean userSelectedSite) {
+        if (stop == null)
+            throw new IllegalArgumentException("Selected stop cannot be null");
 
+        if (userSelectedSite && !Objects.equals(this.stop, stop)) {
+            appState.getDeparturesRepository().cleanCache();
+        }
+
+        this.userSelectedSite = userSelectedSite;
+        this.stop = stop;
+        nowView.setLoadingIndicator(false);
+        nowView.showNearbyStop(stop.getName(), stop.getDist());
+        // loadDepartures(userSelectedSite);
+    }
+
+    @Override
+    public StopLocation getStop() {
+        return userSelectedSite ? stop : null;
     }
 
     @Override
     public void updateLocation(double latitude, double longitude) {
+        // If we've moved, invalidate cache
+        boolean changed = latitude != this.latitude && longitude != this.longitude;
+
+        System.err.println("------------- updateLocation called!");
+
         this.latitude = latitude;
         this.longitude = longitude;
-        loadNearbyStops();
+
+        if (changed) {
+            appState.getStopsRepository().cleanCache(true);
+            loadNearbyStops();
+        }
     }
 
     @Override

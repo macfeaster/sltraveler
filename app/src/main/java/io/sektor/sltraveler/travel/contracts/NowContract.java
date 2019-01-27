@@ -7,6 +7,7 @@ import io.sektor.sltraveler.BasePresenter;
 import io.sektor.sltraveler.BaseView;
 import io.sektor.sltraveler.travel.models.results.departures.Departure;
 import io.sektor.sltraveler.travel.models.results.departures.Departure.TransportMode;
+import io.sektor.sltraveler.travel.models.results.nearbystops.StopLocation;
 
 public interface NowContract {
 
@@ -33,7 +34,9 @@ public interface NowContract {
 
         void showPicker();
 
-        void result(int requestCode, int resultCode);
+        void selectSite(StopLocation stop, boolean userSelectedSite);
+
+        StopLocation getStop();
 
         void updateLocation(double latitude, double longitude);
 

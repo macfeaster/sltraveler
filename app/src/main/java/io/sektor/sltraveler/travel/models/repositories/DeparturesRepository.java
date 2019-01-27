@@ -7,7 +7,9 @@ import java.util.List;
 import java.util.TreeMap;
 
 import io.reactivex.Maybe;
+import io.reactivex.MaybeObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import io.sektor.sltraveler.ApplicationState;
 import io.sektor.sltraveler.travel.models.disk.DiskCache;
@@ -26,6 +28,11 @@ public class DeparturesRepository {
     public DeparturesRepository(ApplicationState appState, Context context) {
         this.appState = appState;
         this.diskCache = new DiskCache<>(context, CACHE_NAME);
+    }
+
+    public void cleanCache() {
+        TreeMap<TransportMode, List<Departure>> result = diskCache.forceCleanCacheBlocking();
+        Log.d(LOG_TAG, "Force cleaned departures with result " + result);
     }
 
     public Maybe<TreeMap<TransportMode, List<Departure>>> loadDepartures(int siteId) {
@@ -49,7 +56,27 @@ public class DeparturesRepository {
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .doOnError(e -> Log.e(LOG_TAG, e.getMessage()))
-                        .subscribe(ls -> Log.d(LOG_TAG, "Cached departures response: " + ls.size())));
+                        .subscribe(new MaybeObserver<TreeMap<TransportMode, List<Departure>>>() {
+                            @Override
+                            public void onSubscribe(Disposable d) {
+                                Log.d(LOG_TAG, "Post persist received event onSubscribe");
+                            }
+
+                            @Override
+                            public void onSuccess(TreeMap<TransportMode, List<Departure>> ls) {
+                                Log.d(LOG_TAG, "Post persist received event onSuccess: " + ls.size());
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+                                e.printStackTrace();
+                            }
+
+                            @Override
+                            public void onComplete() {
+                                Log.d(LOG_TAG, "Post persist received event onComplete");
+                            }
+                        }));
     }
 
 }

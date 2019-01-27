@@ -1,13 +1,16 @@
 
 package io.sektor.sltraveler.travel.models.results.nearbystops;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 @Entity(tableName = "stop")
-public class StopLocation {
+public class StopLocation implements Parcelable {
 
     @ColumnInfo
     private String idx;
@@ -33,6 +36,44 @@ public class StopLocation {
 
     public StopLocation() {
         this.time = System.currentTimeMillis() / 1000L;
+    }
+
+    protected StopLocation(Parcel in) {
+        idx = in.readString();
+        name = in.readString();
+        id = in.readString();
+        lat = in.readString();
+        lon = in.readString();
+        dist = in.readString();
+        time = in.readLong();
+    }
+
+    public static final Creator<StopLocation> CREATOR = new Creator<StopLocation>() {
+        @Override
+        public StopLocation createFromParcel(Parcel in) {
+            return new StopLocation(in);
+        }
+
+        @Override
+        public StopLocation[] newArray(int size) {
+            return new StopLocation[size];
+        }
+    };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(idx);
+        dest.writeString(name);
+        dest.writeString(id);
+        dest.writeString(lat);
+        dest.writeString(lon);
+        dest.writeString(dist);
+        dest.writeLong(time);
     }
 
     public String getIdx() {
@@ -94,4 +135,5 @@ public class StopLocation {
     public void setTime(long time) {
         this.time = time;
     }
+
 }

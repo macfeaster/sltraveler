@@ -2,6 +2,7 @@ package io.sektor.sltraveler.travel.views.adapters;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,8 +32,20 @@ public class DepartureAdapter extends BaseExpandableListAdapter {
     }
 
     public void replaceData(List<TransportMode> headers, Map<TransportMode, List<Departure>> children) {
+        Log.e("DepartureAdapter", "Replacing data with " + sizeof(children) + " departures.");
         this.headers = headers;
         this.children = children;
+        notifyDataSetChanged();
+    }
+
+    private static int sizeof(Map<TransportMode, List<Departure>> items) {
+        if (items == null) return 0;
+
+        int sum = 0;
+        for (List<Departure> deps : items.values())
+            sum += deps.size();
+
+        return sum;
     }
 
     @Override
@@ -80,7 +93,7 @@ public class DepartureAdapter extends BaseExpandableListAdapter {
 
         if (view == null) {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            view = inflater.inflate(R.layout.list_group, null);
+            view = inflater.inflate(R.layout.list_group, parent, false);
         }
 
         TextView listHeader = view.findViewById(R.id.departure_list_header);
@@ -103,7 +116,7 @@ public class DepartureAdapter extends BaseExpandableListAdapter {
 
         if (view == null) {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            view = inflater.inflate(R.layout.departure_list_item, null);
+            view = inflater.inflate(R.layout.departure_list_item, parent, false);
         }
 
         // TextView type = (TextView) convertView.findViewById(R.id.departure_item_type);

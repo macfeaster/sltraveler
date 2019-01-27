@@ -5,8 +5,10 @@ import android.util.Log;
 import java.util.List;
 
 import io.reactivex.Maybe;
+import io.reactivex.MaybeObserver;
 import io.reactivex.MaybeOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import io.sektor.sltraveler.ApplicationState;
 import io.sektor.sltraveler.travel.models.dao.StopLocationDao;
@@ -26,14 +28,15 @@ public class NearbyStopsRepository {
 
     public Maybe<List<StopLocation>> loadNearbyStops(String latitude, String longitude) {
         return Maybe
-                .concat(cleanCache(), loadStopsLocal(), loadStopsRemote(latitude, longitude))
+                .concat(cleanCache(false), loadStopsLocal(), loadStopsRemote(latitude, longitude))
                 .doOnError(err -> Log.e(LOG_TAG, err.getMessage()))
                 .firstElement();
     }
 
-    public Maybe<List<StopLocation>> cleanCache() {
-        // Invalidate anything older than a minute
-        long maxAge = System.currentTimeMillis() / 1000L - 60;
+    public Maybe<List<StopLocation>> cleanCache(boolean forceClean) {
+        // Invalidate anything older than an hour
+        long maxAgeSeconds = forceClean ? 0 : 3600;
+        long maxAge = System.currentTimeMillis() / 1000L - maxAgeSeconds;
 
         MaybeOnSubscribe<List<StopLocation>> del = emitter -> {
             stopLocationDao.deleteAll(maxAge);
@@ -60,10 +63,30 @@ public class NearbyStopsRepository {
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .doOnError(e -> Log.e(LOG_TAG, e.getMessage()))
-                        .subscribe(ls -> Log.d(LOG_TAG, "Cached NBS response: " + ls.size())));
+                        .subscribe(new MaybeObserver<List<Long>>() {
+                            @Override
+                            public void onSubscribe(Disposable d) {
+                                Log.d(LOG_TAG, "Post persist received event onSubscribe");
+                            }
+
+                            @Override
+                            public void onSuccess(List<Long> longs) {
+                                Log.d(LOG_TAG, "Post persist received event onSuccess: " + longs);
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+                                e.printStackTrace();
+                            }
+
+                            @Override
+                            public void onComplete() {
+                                Log.d(LOG_TAG, "Post persist received event onComplete");
+                            }
+                        }));
     }
 
-    private Maybe<List<StopLocation>> loadStopsLocal() {
+    public Maybe<List<StopLocation>> loadStopsLocal() {
         return stopLocationDao
                 .getAll()
                 .subscribeOn(Schedulers.io())

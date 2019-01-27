@@ -27,16 +27,34 @@ public class DiskCache<T extends Serializable> {
         this.cacheName = cacheName;
     }
 
+    public T forceCleanCacheBlocking() {
+        // Invalidate anything older than a minute
+        long maxAge = System.currentTimeMillis() / 1000L;
+
+        return Maybe.create(getCleaner(maxAge))
+                .doOnError(err -> Log.e(LOG_TAG, err.getMessage()))
+                .subscribeOn(Schedulers.io())
+                .doOnComplete(() -> Log.d(LOG_TAG, "Forced, blocking cache cleaning task completed"))
+                .blockingGet();
+    }
+
     public Maybe<T> cleanCache(int maxAgeSeconds) {
         // Invalidate anything older than a minute
         long maxAge = System.currentTimeMillis() / 1000L - maxAgeSeconds;
 
-        MaybeOnSubscribe<T> del = emitter -> {
+        return Maybe.create(getCleaner(maxAge))
+                .doOnError(err -> Log.e(LOG_TAG, err.getMessage()))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnComplete(() -> Log.d(LOG_TAG, "Cache cleaning task completed"));
+    }
+
+    private MaybeOnSubscribe<T> getCleaner(long maxAge) {
+        return emitter -> {
             File file = new File(context.getCacheDir(), cacheName);
             try {
                 // Just complete if we have no cache
                 if (!file.isFile()) {
-                    Log.d(LOG_TAG, file.getAbsolutePath());
                     Log.d(LOG_TAG, "No disk cache found, skipping cleaning");
                     emitter.onComplete();
                     return;
@@ -55,12 +73,6 @@ public class DiskCache<T extends Serializable> {
                 emitter.onError(e);
             }
         };
-
-        return Maybe.create(del)
-                .doOnError(err -> Log.e(LOG_TAG, err.getMessage()))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnComplete(() -> Log.d(LOG_TAG, "Cache cleaning task completed"));
     }
 
     public Maybe<T> persist(T item) {

@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -19,11 +20,13 @@ public class StationAdapter extends BaseExpandableListAdapter {
     private Context context;
     private List<String> headers;
     private Map<String, List<StopLocation>> children;
+    private final ExpandableListView.OnChildClickListener listener;
 
-    public StationAdapter(Context context, List<String> headers, Map<String, List<StopLocation>> children) {
+    public StationAdapter(Context context, List<String> headers, Map<String, List<StopLocation>> children, ExpandableListView.OnChildClickListener listener) {
         this.context = context;
         this.headers = headers;
         this.children = children;
+        this.listener = listener;
     }
 
     public void replaceData(List<String> headers, Map<String, List<StopLocation>> children) {
@@ -76,7 +79,7 @@ public class StationAdapter extends BaseExpandableListAdapter {
 
         if (view == null) {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            view = inflater.inflate(R.layout.list_group, null);
+            view = inflater.inflate(R.layout.list_group, parent, false);
         }
 
         TextView listHeader = view.findViewById(R.id.departure_list_header);
@@ -91,8 +94,10 @@ public class StationAdapter extends BaseExpandableListAdapter {
 
         if (view == null) {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            view = inflater.inflate(R.layout.departure_list_item, null);
+            view = inflater.inflate(R.layout.station_list_item, parent, false);
         }
+
+        view.setOnClickListener(v -> listener.onChildClick((ExpandableListView) parent, v, groupPosition, childPosition, getChildId(groupPosition, childPosition)));
 
         TextView name = view.findViewById(R.id.station_name);
         TextView distance = view.findViewById(R.id.station_distance);
