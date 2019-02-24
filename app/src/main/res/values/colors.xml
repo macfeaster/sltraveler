@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">@color/md_indigo_500</color>
-    <color name="colorPrimaryDark">@color/md_indigo_700</color>
-    <color name="colorAccent">@color/md_green_A200</color>
+    <color name="colorPrimary">#405f9b</color>
+    <color name="colorPrimaryDark">#324c78</color>
+    <color name="colorAccent">#71d7ff</color>
     <color name="primary">#FF000000</color>
     <color name="secondary">#B0000000</color>
 
