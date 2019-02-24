@@ -34,5 +34,6 @@
     <string name="choose_stop">Välj hållplats</string>
     <string name="stop_distance_short">%s M</string>
     <string name="nearby_stops">Närliggande hållplatser</string>
+    <string name="favorites_go_to">Åk direkt till...</string>
 
 </resources>
